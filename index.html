@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirection Cryptée AES-256</title>
+    <title>Redirection Sécurisée</title>
     <style>
         * {
             margin: 0;
@@ -121,12 +121,8 @@
         .result-box input {
             background: white;
             font-family: monospace;
-            font-size: 12px;
-        }
-
-        .password-box {
-            background: #fffaf0;
-            border: 2px solid #fbd38d;
+            font-size: 11px;
+            word-break: break-all;
         }
 
         .copy-btn {
@@ -135,52 +131,6 @@
             width: auto;
             margin-top: 10px;
             font-size: 14px;
-        }
-
-        .warning-box {
-            background: #fffaf0;
-            border: 2px solid #fbd38d;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .warning-box h3 {
-            color: #744210;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .warning-box ul {
-            color: #744210;
-            font-size: 13px;
-            list-style-position: inside;
-        }
-
-        .warning-box li {
-            margin-bottom: 5px;
-        }
-
-        .info-box {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 30px;
-        }
-
-        .info-box h2 {
-            color: #2d3748;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        .info-box ul {
-            color: #4a5568;
-            font-size: 14px;
-        }
-
-        .info-box li {
-            margin-bottom: 8px;
         }
 
         .btn-group {
@@ -239,6 +189,17 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        .security-badge {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -251,63 +212,42 @@
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                 </div>
-                <h1>Redirection Cryptée AES-256</h1>
-                <p class="subtitle">URLs sécurisées impossibles à décrypter sans le mot de passe</p>
+                <h1>Générateur de liens sécurisés</h1>
+                <p class="subtitle">Créez des liens protégés avec dates de validité</p>
+                <div class="security-badge">🔐 Lien chiffré</div>
             </div>
 
             <div id="formSection">
                 <div class="form-group">
-                    <label>🔗 URL à crypter *</label>
+                    <label>🔗 URL de destination *</label>
                     <input type="text" id="urlInput" placeholder="exemple.com ou https://exemple.com">
                 </div>
 
                 <div class="form-group">
                     <label>📅 Date de début (optionnel)</label>
                     <input type="datetime-local" id="startDate">
-                    <p class="input-hint">L'URL sera accessible à partir de cette date</p>
+                    <p class="input-hint">Le lien sera accessible à partir de cette date</p>
                 </div>
 
                 <div class="form-group">
                     <label>📅 Date de fin (optionnel)</label>
                     <input type="datetime-local" id="endDate">
-                    <p class="input-hint">L'URL expirera après cette date</p>
+                    <p class="input-hint">Le lien expirera après cette date</p>
                 </div>
 
-                <div class="form-group">
-                    <label>🔐 Mot de passe (optionnel)</label>
-                    <input type="text" id="passwordInput" placeholder="Laissez vide pour générer automatiquement">
-                    <p class="input-hint">Un mot de passe aléatoire fort sera généré si vide</p>
-                </div>
-
-                <button onclick="generateEncryptedUrl()">Générer l'URL Cryptée</button>
+                <button onclick="generateSecureUrl()">🚀 Générer le lien</button>
             </div>
 
             <div id="resultSection" class="hidden">
                 <div class="result-box">
-                    <label>🔒 URL Cryptée</label>
-                    <input type="text" id="encryptedUrlResult" readonly>
-                    <button class="copy-btn" onclick="copyUrl()">📋 Copier l'URL</button>
-                </div>
-
-                <div class="result-box password-box">
-                    <label>🛡️ Mot de passe (à partager séparément)</label>
-                    <input type="text" id="passwordResult" readonly>
-                    <button class="copy-btn" onclick="copyPassword()">📋 Copier le mot de passe</button>
-                </div>
-
-                <div class="warning-box">
-                    <h3>⚠️ Important - Sécurité</h3>
-                    <ul>
-                        <li>Partagez le mot de passe par un canal différent (SMS, appel, etc.)</li>
-                        <li>L'URL est cryptée avec AES-256-GCM</li>
-                        <li>Impossible à décrypter sans le mot de passe</li>
-                        <li>Même une IA ne peut pas récupérer l'URL originale</li>
-                    </ul>
+                    <label>🔒 Votre lien sécurisé</label>
+                    <input type="text" id="secureUrlResult" readonly>
+                    <button class="copy-btn" onclick="copyUrl()">📋 Copier</button>
                 </div>
 
                 <div class="btn-group">
                     <button onclick="testUrl()">🚀 Tester</button>
-                    <button class="btn-secondary" onclick="reset()">🔄 Nouvelle URL</button>
+                    <button class="btn-secondary" onclick="reset()">🔄 Nouveau lien</button>
                 </div>
             </div>
         </div>
@@ -316,20 +256,19 @@
             <div class="header">
                 <div class="icon">
                     <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
                 </div>
-                <h1>URL Protégée</h1>
-                <p class="subtitle">Entrez le mot de passe pour accéder à cette URL</p>
+                <h1>Vérification en cours</h1>
+                <p class="subtitle">Validation du lien sécurisé</p>
             </div>
 
-            <div id="passwordPrompt">
-                <div class="form-group">
-                    <label>🔐 Mot de passe</label>
-                    <input type="password" id="decryptPassword" placeholder="Entrez le mot de passe">
+            <div id="checkingSection">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h2 style="color: #2d3748;">Vérification...</h2>
+                    <p style="color: #718096; margin-top: 10px;">Validation du lien en cours</p>
                 </div>
-                <button onclick="unlockUrl()">🔓 Déverrouiller</button>
             </div>
 
             <div id="errorSection" class="hidden">
@@ -337,107 +276,108 @@
                     <div class="error-icon">🚫</div>
                     <h2 style="color: #c53030; margin-bottom: 10px;">Accès Refusé</h2>
                     <p id="errorMessage" style="color: #718096; margin-bottom: 20px;"></p>
-                    <div class="btn-group">
-                        <button onclick="retryPassword()">🔄 Réessayer</button>
-                        <button class="btn-secondary" onclick="goBack()">← Retour</button>
-                    </div>
+                    <button class="btn-secondary" onclick="goBack()">← Retour</button>
                 </div>
             </div>
 
-            <div id="loadingSection" class="hidden">
+            <div id="redirectingSection" class="hidden">
                 <div class="loading">
                     <div class="spinner"></div>
-                    <h2 style="color: #2d3748;">Redirection en cours...</h2>
-                    <p style="color: #718096; margin-top: 10px;">Veuillez patienter</p>
+                    <h2 style="color: #2d3748;">✅ Lien valide</h2>
+                    <p style="color: #718096; margin-top: 10px;">Redirection en cours...</p>
                 </div>
             </div>
-        </div>
-
-        <div class="info-box">
-            <h2>🔐 Sécurité Maximale</h2>
-            <ul>
-                <li><strong>Cryptage AES-256-GCM</strong> - Standard militaire</li>
-                <li><strong>Indécryptable</strong> - Même une IA ne peut pas récupérer l'URL sans le mot de passe</li>
-                <li><strong>Aucun stockage</strong> - Tout se passe dans votre navigateur</li>
-                <li><strong>Contrôle temporel</strong> - Dates de validité vérifiées avant redirection</li>
-                <li><strong>Sécurité par séparation</strong> - Partagez URL et mot de passe séparément</li>
-            </ul>
         </div>
     </div>
 
     <script>
-        // Détection du mode au chargement
-        window.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                document.getElementById('createMode').classList.add('hidden');
-                document.getElementById('redirectMode').classList.remove('hidden');
-                document.getElementById('decryptPassword').focus();
-            }
-        });
-
-        // Génération de clé de cryptage
-        async function generateKey(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            return hashBuffer;
+        function getCanonicalUrl() {
+            return window.location.origin + window.location.pathname;
         }
 
-        // Cryptage AES-GCM
-        async function encryptData(data, password) {
+        function stringToHex(str) {
+            let hex = '';
+            for (let i = 0; i < str.length; i++) {
+                const charCode = str.charCodeAt(i);
+                hex += charCode.toString(16).padStart(2, '0');
+            }
+            return hex;
+        }
+
+        async function generateUrlBasedKey() {
+            const hexUrl = stringToHex(getCanonicalUrl());
             const encoder = new TextEncoder();
-            const keyMaterial = await generateKey(password);
+            const data = encoder.encode(hexUrl);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            return new Uint8Array(hashBuffer);
+        }
+
+        async function generateMasterKey() {
+            const entropy = window.location.origin + Date.now() + navigator.userAgent;
+            const encoder = new TextEncoder();
+            const data = encoder.encode(entropy);
+            const hash = await crypto.subtle.digest('SHA-512', data);
+            return new Uint8Array(hash).slice(0, 32);
+        }
+
+        function generateRandomKey() {
+            return crypto.getRandomValues(new Uint8Array(32));
+        }
+
+        function arrayToBase64(array) {
+            return btoa(String.fromCharCode(...array))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+        }
+
+        function base64ToArray(base64) {
+            const base64Fixed = base64
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+            const padding = '='.repeat((4 - base64Fixed.length % 4) % 4);
+            const binary = atob(base64Fixed + padding);
+            return new Uint8Array([...binary].map(char => char.charCodeAt(0)));
+        }
+
+        async function encryptAES(data, keyBytes) {
+            const encoder = new TextEncoder();
+            const iv = crypto.getRandomValues(new Uint8Array(12));
             
             const key = await crypto.subtle.importKey(
                 'raw',
-                keyMaterial,
+                keyBytes,
                 { name: 'AES-GCM', length: 256 },
                 false,
                 ['encrypt']
             );
 
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const encodedData = encoder.encode(JSON.stringify(data));
-
             const encrypted = await crypto.subtle.encrypt(
                 { name: 'AES-GCM', iv: iv },
                 key,
-                encodedData
+                typeof data === 'string' ? encoder.encode(data) : data
             );
 
             const combined = new Uint8Array(iv.length + encrypted.byteLength);
             combined.set(iv, 0);
             combined.set(new Uint8Array(encrypted), iv.length);
 
-            return btoa(String.fromCharCode(...combined))
-                .replace(/\+/g, '-')
-                .replace(/\//g, '_')
-                .replace(/=/g, '');
+            return arrayToBase64(combined);
         }
 
-        // Décryptage AES-GCM
-        async function decryptData(encryptedText, password) {
+        async function decryptAES(encryptedBase64, keyBytes) {
             try {
-                const keyMaterial = await generateKey(password);
-                
+                const combined = base64ToArray(encryptedBase64);
+                const iv = combined.slice(0, 12);
+                const data = combined.slice(12);
+
                 const key = await crypto.subtle.importKey(
                     'raw',
-                    keyMaterial,
+                    keyBytes,
                     { name: 'AES-GCM', length: 256 },
                     false,
                     ['decrypt']
                 );
-
-                const base64 = encryptedText
-                    .replace(/-/g, '+')
-                    .replace(/_/g, '/');
-                
-                const padding = '='.repeat((4 - base64.length % 4) % 4);
-                const combined = Uint8Array.from(atob(base64 + padding), c => c.charCodeAt(0));
-
-                const iv = combined.slice(0, 12);
-                const data = combined.slice(12);
 
                 const decrypted = await crypto.subtle.decrypt(
                     { name: 'AES-GCM', iv: iv },
@@ -445,25 +385,34 @@
                     data
                 );
 
-                const decoder = new TextDecoder();
-                return JSON.parse(decoder.decode(decrypted));
+                return new Uint8Array(decrypted);
             } catch (e) {
                 return null;
             }
         }
 
-        // Génération de mot de passe aléatoire
-        function generateRandomPassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-            let result = '';
-            for (let i = 0; i < 32; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
+        function calculateKeyPosition(dataLength, keyLength) {
+            const golden = 1.618033988749895;
+            const position = Math.floor((dataLength - keyLength) * (golden % 1));
+            return Math.max(10, Math.min(position, dataLength - keyLength - 10));
         }
 
-        // Génération de l'URL cryptée
-        async function generateEncryptedUrl() {
+        function embedKey(data, encryptedKey) {
+            const position = calculateKeyPosition(data.length, encryptedKey.length);
+            return data.slice(0, position) + '.' + encryptedKey + '.' + data.slice(position);
+        }
+
+        function extractKey(combined) {
+            const parts = combined.split('.');
+            if (parts.length !== 3) return null;
+            
+            return {
+                data: parts[0] + parts[2],
+                encryptedKey: parts[1]
+            };
+        }
+
+        async function generateSecureUrl() {
             const url = document.getElementById('urlInput').value.trim();
             if (!url) {
                 alert('Veuillez entrer une URL');
@@ -477,131 +426,147 @@
 
             const startDate = document.getElementById('startDate').value || null;
             const endDate = document.getElementById('endDate').value || null;
-            let password = document.getElementById('passwordInput').value.trim();
-            
-            if (!password) {
-                password = generateRandomPassword();
-            }
 
             const data = {
                 url: finalUrl,
                 start: startDate,
-                end: endDate
+                end: endDate,
+                created: new Date().toISOString()
             };
 
-            const encrypted = await encryptData(data, password);
-            const fullUrl = `${window.location.origin}${window.location.pathname}#${encrypted}`;
+            const urlBasedKey = await generateUrlBasedKey();
+            const secondaryKey = generateRandomKey();
+            const encryptedData = await encryptAES(JSON.stringify(data), secondaryKey);
+            const encryptedSecondaryKey = await encryptAES(secondaryKey, urlBasedKey);
+            const masterKey = await generateMasterKey();
+            const encryptedUrlKey = await encryptAES(encryptedSecondaryKey, masterKey);
+            const combined = embedKey(encryptedData, encryptedUrlKey);
+            const fullUrl = `${getCanonicalUrl()}#${combined}`;
 
-            document.getElementById('encryptedUrlResult').value = fullUrl;
-            document.getElementById('passwordResult').value = password;
-            
+            document.getElementById('secureUrlResult').value = fullUrl;
             document.getElementById('formSection').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('hidden');
         }
 
-        // Déverrouillage de l'URL
-        async function unlockUrl() {
-            const password = document.getElementById('decryptPassword').value;
-            if (!password) {
-                alert('Veuillez entrer le mot de passe');
-                return;
-            }
-
+        window.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.substring(1);
-            const data = await decryptData(hash, password);
-
-            if (!data) {
-                showError('Mot de passe incorrect');
-                return;
+            if (hash) {
+                document.getElementById('createMode').classList.add('hidden');
+                document.getElementById('redirectMode').classList.remove('hidden');
+                processSecureRedirect();
             }
+        });
 
-            const now = new Date();
-
-            if (data.start) {
-                const startTime = new Date(data.start);
-                if (now < startTime) {
-                    showError(`Cette URL ne sera accessible qu'à partir du ${startTime.toLocaleString('fr-FR')}`);
+        async function processSecureRedirect() {
+            try {
+                const hash = window.location.hash.substring(1);
+                
+                if (!hash) {
+                    showError('Lien invalide');
                     return;
                 }
-            }
 
-            if (data.end) {
-                const endTime = new Date(data.end);
-                if (now > endTime) {
-                    showError(`Cette URL a expiré le ${endTime.toLocaleString('fr-FR')}`);
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                const extracted = extractKey(hash);
+                if (!extracted) {
+                    showError('Format de lien corrompu');
                     return;
                 }
-            }
 
-            document.getElementById('passwordPrompt').classList.add('hidden');
-            document.getElementById('loadingSection').classList.remove('hidden');
-            
-            setTimeout(() => {
-                window.location.href = data.url;
-            }, 1000);
+                const masterKey = await generateMasterKey();
+                const encryptedSecondaryKeyBytes = await decryptAES(extracted.encryptedKey, masterKey);
+                if (!encryptedSecondaryKeyBytes) {
+                    showError('Échec de la validation');
+                    return;
+                }
+
+                const urlBasedKey = await generateUrlBasedKey();
+                const decoder = new TextDecoder();
+                const encryptedSecondaryKeyString = decoder.decode(encryptedSecondaryKeyBytes);
+                const secondaryKeyBytes = await decryptAES(encryptedSecondaryKeyString, urlBasedKey);
+                
+                if (!secondaryKeyBytes) {
+                    showError('Lien invalide ou modifié');
+                    return;
+                }
+
+                const decryptedBytes = await decryptAES(extracted.data, secondaryKeyBytes);
+                if (!decryptedBytes) {
+                    showError('Échec du déchiffrement');
+                    return;
+                }
+
+                const finalDecoder = new TextDecoder();
+                const data = JSON.parse(finalDecoder.decode(decryptedBytes));
+
+                if (!data || !data.url) {
+                    showError('Données corrompues');
+                    return;
+                }
+
+                const now = new Date();
+
+                if (data.start) {
+                    const startTime = new Date(data.start);
+                    if (now < startTime) {
+                        showError(`Ce lien ne sera accessible qu'à partir du ${startTime.toLocaleString('fr-FR')}`);
+                        return;
+                    }
+                }
+
+                if (data.end) {
+                    const endTime = new Date(data.end);
+                    if (now > endTime) {
+                        showError(`Ce lien a expiré le ${endTime.toLocaleString('fr-FR')}`);
+                        return;
+                    }
+                }
+
+                document.getElementById('checkingSection').classList.add('hidden');
+                document.getElementById('redirectingSection').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    window.location.href = data.url;
+                }, 1500);
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de validation');
+            }
         }
 
-        // Affichage d'erreur
         function showError(message) {
             document.getElementById('errorMessage').textContent = message;
-            document.getElementById('passwordPrompt').classList.add('hidden');
+            document.getElementById('checkingSection').classList.add('hidden');
+            document.getElementById('redirectingSection').classList.add('hidden');
             document.getElementById('errorSection').classList.remove('hidden');
         }
 
-        // Réessayer le mot de passe
-        function retryPassword() {
-            document.getElementById('decryptPassword').value = '';
-            document.getElementById('errorSection').classList.add('hidden');
-            document.getElementById('passwordPrompt').classList.remove('hidden');
-            document.getElementById('decryptPassword').focus();
-        }
-
-        // Retour
         function goBack() {
             window.location.hash = '';
             window.location.reload();
         }
 
-        // Copier l'URL
         function copyUrl() {
-            const input = document.getElementById('encryptedUrlResult');
+            const input = document.getElementById('secureUrlResult');
             input.select();
             document.execCommand('copy');
-            alert('URL copiée !');
+            alert('✅ Lien copié !');
         }
 
-        // Copier le mot de passe
-        function copyPassword() {
-            const input = document.getElementById('passwordResult');
-            input.select();
-            document.execCommand('copy');
-            alert('Mot de passe copié !');
-        }
-
-        // Tester l'URL
         function testUrl() {
-            const url = document.getElementById('encryptedUrlResult').value;
+            const url = document.getElementById('secureUrlResult').value;
             window.open(url, '_blank');
         }
 
-        // Réinitialiser
         function reset() {
             document.getElementById('urlInput').value = '';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
-            document.getElementById('passwordInput').value = '';
             document.getElementById('formSection').classList.remove('hidden');
             document.getElementById('resultSection').classList.add('hidden');
         }
-
-        // Enter pour déverrouiller
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !document.getElementById('redirectMode').classList.contains('hidden')) {
-                if (!document.getElementById('passwordPrompt').classList.contains('hidden')) {
-                    unlockUrl();
-                }
-            }
-        });
     </script>
 </body>
 </html>
