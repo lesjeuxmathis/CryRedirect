@@ -313,7 +313,7 @@
         }
 
         async function generateMasterKey() {
-            const entropy = window.location.origin + Date.now() + navigator.userAgent;
+            const entropy = window.location.origin + navigator.userAgent;
             const encoder = new TextEncoder();
             const data = encoder.encode(entropy);
             const hash = await crypto.subtle.digest('SHA-512', data);
@@ -466,7 +466,7 @@
                     return;
                 }
 
-                await new Promise(resolve => setTimeout(resolve, 800));
+                await new Promise(resolve => setTimeout(resolve, 500));
 
                 const extracted = extractKey(hash);
                 if (!extracted) {
@@ -474,31 +474,30 @@
                     return;
                 }
 
+                // Déchiffrement couche par couche
                 const masterKey = await generateMasterKey();
-                const encryptedSecondaryKeyBytes = await decryptAES(extracted.encryptedKey, masterKey);
-                if (!encryptedSecondaryKeyBytes) {
-                    showError('Échec de la validation');
+                const layer1 = await decryptAES(extracted.encryptedKey, masterKey);
+                if (!layer1) {
+                    showError('Erreur de validation (1)');
                     return;
                 }
 
                 const urlBasedKey = await generateUrlBasedKey();
-                const decoder = new TextDecoder();
-                const encryptedSecondaryKeyString = decoder.decode(encryptedSecondaryKeyBytes);
-                const secondaryKeyBytes = await decryptAES(encryptedSecondaryKeyString, urlBasedKey);
+                const layer1String = new TextDecoder().decode(layer1);
+                const layer2 = await decryptAES(layer1String, urlBasedKey);
                 
-                if (!secondaryKeyBytes) {
-                    showError('Lien invalide ou modifié');
+                if (!layer2) {
+                    showError('Erreur de validation (2)');
                     return;
                 }
 
-                const decryptedBytes = await decryptAES(extracted.data, secondaryKeyBytes);
-                if (!decryptedBytes) {
-                    showError('Échec du déchiffrement');
+                const finalData = await decryptAES(extracted.data, layer2);
+                if (!finalData) {
+                    showError('Erreur de validation (3)');
                     return;
                 }
 
-                const finalDecoder = new TextDecoder();
-                const data = JSON.parse(finalDecoder.decode(decryptedBytes));
+                const data = JSON.parse(new TextDecoder().decode(finalData));
 
                 if (!data || !data.url) {
                     showError('Données corrompues');
@@ -528,11 +527,11 @@
                 
                 setTimeout(() => {
                     window.location.href = data.url;
-                }, 1500);
+                }, 1200);
 
             } catch (error) {
-                console.error('Erreur:', error);
-                showError('Erreur de validation');
+                console.error('Erreur détaillée:', error);
+                showError('Erreur de validation - ' + error.message);
             }
         }
 
